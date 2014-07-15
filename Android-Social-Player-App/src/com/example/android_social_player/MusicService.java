@@ -137,4 +137,53 @@ public class MusicService extends Service implements OnPreparedListener, MediaPl
 	public void setSong(int songIndex){
 		songPosition = songIndex;
 	}
+	/**
+	 * Define methods for player accessing through activity
+	 * @return
+	 */
+	public int getPosn(){
+		return player.getCurrentPosition();
+	}
+	
+	public int getDur(){
+		return player.getDuration();
+	}
+	
+	public boolean isPng(){
+		return player.isPlaying();
+	}
+	
+	public void pausePlayer()
+	{
+		player.pause();
+	}
+	
+	public void seek(int position)
+	{
+		player.seekTo(position);
+	}
+	
+	public void go()
+	{
+		player.start();
+	}
+	
+	/**
+	 * Functions to skipping to the next or previous track
+	 */
+	//Previous
+	public void playPrev()
+	{
+		songPosition--;
+		if(songPosition<0) songPosition=-1;
+		  playSong();
+	}
+	
+	//Next
+	public void playNext()
+	{
+		songPosition ++;
+		if(songPosition >= songs.size()) songPosition = 0;
+		playSong();
+	}
 }

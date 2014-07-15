@@ -20,8 +20,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.MediaController.MediaPlayerControl;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements MediaPlayerControl {
 
 	private ArrayList<Song> songList;
 	private ListView songView;
@@ -29,6 +30,7 @@ public class MainActivity extends Activity {
 	private MusicService musicService;
 	private Intent playerIntent;
 	private boolean musicBound = false;
+	private MusicController controllerMusic;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +52,37 @@ public class MainActivity extends Activity {
 		// Set view with custom adapter
 		SongAdapter songAdapter = new SongAdapter(this, songList);
 		songView.setAdapter(songAdapter);
+
+		setControllerMusic();
+	}
+
+	private void setControllerMusic() {
+		controllerMusic = new MusicController(this);
+		controllerMusic.setPrevNextListeners(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				playNext();
+			}
+		}, new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				playPrev();
+			}
+		});
+
+		controllerMusic.setMediaPlayer(this);
+		controllerMusic.setAnchorView(findViewById(R.id.song_list));
+		controllerMusic.setEnabled(true);
+	}
+
+	private void playNext() {
+		musicService.playNext();
+		controllerMusic.show(0);
+	}
+
+	private void playPrev() {
+		musicService.playPrev();
+		controllerMusic.show(0);
 	}
 
 	/**
@@ -102,12 +135,12 @@ public class MainActivity extends Activity {
 	}
 
 	@Override
-	protected void onDestroy(){
+	protected void onDestroy() {
 		stopService(playerIntent);
 		musicService = null;
 		super.onDestroy();
 	}
-	
+
 	/**
 	 * Helper method to retrieve the audio file informations
 	 */
@@ -162,5 +195,71 @@ public class MainActivity extends Activity {
 		// Set the song position as the tag for each item in the list view
 		musicService.setSong(Integer.parseInt(view.getTag().toString()));
 		musicService.playSong();
+	}
+
+	@Override
+	public boolean canPause() {
+		return true;
+	}
+
+	@Override
+	public boolean canSeekBackward() {
+		return true;
+	}
+
+	@Override
+	public boolean canSeekForward() {
+		return true;
+	}
+
+	@Override
+	public int getAudioSessionId() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getBufferPercentage() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getCurrentPosition() {
+		if (musicService != null && musicBound && musicService.isPng())
+			return musicService.getPosn();
+		else
+			return 0;
+	}
+
+	@Override
+	public int getDuration() {
+		if (musicService != null && musicBound && musicService.isPng())
+			return musicService.getDur();
+		else
+			return 0;
+	}
+
+	@Override
+	public boolean isPlaying() {
+		if (musicService != null && musicBound) {
+			return musicService.isPng();
+		}
+		return false;
+	}
+
+	@Override
+	public void pause() {
+		musicService.pausePlayer();
+	}
+
+	@Override
+	public void seekTo(int pos) {
+		musicService.seek(pos);
+	}
+
+	@Override
+	public void start() {
+		musicService.go();
 	}
 }
