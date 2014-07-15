@@ -22,6 +22,7 @@ import android.media.MediaPlayer.OnPreparedListener;
  * @author coxyJo
  * All interfaces we are implementing will aid the process of interacting with the MediaPlayer class
  * DON'T FORGET TO HANDLE AUDIO FOCUS !!!!!!!!!!
+ * CHECK AUTO PLAY AFTER NEXT AND PREV ETC...
  */
 public class MusicService extends Service implements OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener{
 	//The media player
@@ -136,7 +137,7 @@ public class MusicService extends Service implements OnPreparedListener, MediaPl
 		//Start playback
 		mp.start();		
 		/**
-		 * we will display a notification showing the title of the track being played. Clicking the notification will take the user back into the app
+		 * we will display a notification showing the title of the track being played. Clicking the notification will take the user back into the application
 		 */
 		Intent noIntent = new Intent(this,MainActivity.class);
 		noIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
