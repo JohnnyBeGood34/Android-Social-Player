@@ -31,6 +31,7 @@ public class MainActivity extends Activity implements MediaPlayerControl {
 	private Intent playerIntent;
 	private boolean musicBound = false;
 	private MusicController controllerMusic;
+	private boolean paused = false, playbackPaused = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -77,11 +78,19 @@ public class MainActivity extends Activity implements MediaPlayerControl {
 
 	private void playNext() {
 		musicService.playNext();
+		if (playbackPaused) {
+			setControllerMusic();
+			playbackPaused = false;
+		}
 		controllerMusic.show(0);
 	}
 
 	private void playPrev() {
 		musicService.playPrev();
+		if (playbackPaused) {
+			setControllerMusic();
+			playbackPaused = false;
+		}
 		controllerMusic.show(0);
 	}
 
@@ -122,6 +131,7 @@ public class MainActivity extends Activity implements MediaPlayerControl {
 		switch (item.getItemId()) {
 		// If the user click on the shuffle button
 		case R.id.action_shuffle:
+			musicService.setShuffle();
 			break;
 		// If the user click on the end button
 		case R.id.action_end:
@@ -195,6 +205,11 @@ public class MainActivity extends Activity implements MediaPlayerControl {
 		// Set the song position as the tag for each item in the list view
 		musicService.setSong(Integer.parseInt(view.getTag().toString()));
 		musicService.playSong();
+		if (playbackPaused) {
+			setControllerMusic();
+			playbackPaused = false;
+		}
+		controllerMusic.show(0);
 	}
 
 	@Override
@@ -250,6 +265,7 @@ public class MainActivity extends Activity implements MediaPlayerControl {
 
 	@Override
 	public void pause() {
+		playbackPaused = true;
 		musicService.pausePlayer();
 	}
 
@@ -261,5 +277,26 @@ public class MainActivity extends Activity implements MediaPlayerControl {
 	@Override
 	public void start() {
 		musicService.go();
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		paused = true;
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		if (paused) {
+			setControllerMusic();
+			paused = false;
+		}
+	}
+
+	@Override
+	protected void onStop() {
+		controllerMusic.hide();
+		super.onStop();
 	}
 }

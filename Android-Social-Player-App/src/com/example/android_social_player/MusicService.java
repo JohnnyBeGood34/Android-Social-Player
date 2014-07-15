@@ -21,6 +21,7 @@ import android.media.MediaPlayer.OnPreparedListener;
  * Music service
  * @author coxyJo
  * All interfaces we are implementing will aid the process of interacting with the MediaPlayer class
+ * DON'T FORGET TO HANDLE AUDIO FOCUS !!!!!!!!!!
  */
 public class MusicService extends Service implements OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener{
 	//The media player
@@ -111,16 +112,22 @@ public class MusicService extends Service implements OnPreparedListener, MediaPl
 		player.release();
 		return false;
 	}
-	
+	/**
+	 * onCompletion fire when a track finished
+	 */
 	@Override
-	public void onCompletion(MediaPlayer arg0) {
-		// TODO Auto-generated method stub
-		
+	public void onCompletion(MediaPlayer mp) {
+		//play next track when current track finished
+		if(player.getCurrentPosition()>0)
+		{
+			mp.reset();
+			playNext();
+		}
 	}
 
 	@Override
 	public boolean onError(MediaPlayer mp, int what, int extra) {
-		// TODO Auto-generated method stub
+		mp.reset();
 		return false;
 	}
 
@@ -218,7 +225,7 @@ public class MusicService extends Service implements OnPreparedListener, MediaPl
 	
 	//Next
 	/**
-	 * We must handle a queue of song to be sure to don't repeat the same music in shuffle
+	 * We must handle a queue of song to be sure to don't repeat the last music played in shuffle mode
 	 */
 	public void playNext()
 	{
