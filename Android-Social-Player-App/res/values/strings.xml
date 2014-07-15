@@ -4,5 +4,6 @@
     <string name="app_name">Android-social-player</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
-
+	<string name="Shuffle">Shuffle</string>
+	<string name="End">End</string>
 </resources>

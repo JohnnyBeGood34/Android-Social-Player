@@ -7,7 +7,9 @@
     <uses-sdk
         android:minSdkVersion="16"
         android:targetSdkVersion="18" />
-
+	
+    <!-- permission to let music play back continue when the user's device becomes idle -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -23,8 +25,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service android:name="com.example.musicplayer.MusicService" />
     </application>
-    <!-- permission to let music play back continue when the user's device becomes idle -->
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
 </manifest>
