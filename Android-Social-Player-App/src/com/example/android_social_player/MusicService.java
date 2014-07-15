@@ -1,7 +1,10 @@
 package com.example.android_social_player;
 
 import java.util.ArrayList;
+import java.util.Random;
 
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ContentUris;
 import android.content.Intent;
@@ -29,10 +32,18 @@ public class MusicService extends Service implements OnPreparedListener, MediaPl
 	//Instance variable witch represent the inner Binder, used in the onBind() method
 	private final IBinder musicBind = new MusicBinder();
 	
+	private String songTitle = "";
+	private static final int NOTIFY_ID = 1;
+	//Flag to say if user want a shuffle playing
+	private boolean shuffle = false;
+	private Random random;
+	
 	public void onCreate()
 	{
 		//Create the service
 		super.onCreate();
+		//Instantiation of random
+		this.random = new Random();
 		//Initialize the position
 		this.songPosition = 0;
 		//Create the player
@@ -40,6 +51,18 @@ public class MusicService extends Service implements OnPreparedListener, MediaPl
 		//initialization
 		initMusicPlayer();
 	}
+	
+	public void setShuffle()
+	{
+		if(shuffle)
+		{
+			shuffle = false;
+		}else
+		{
+			shuffle = true;
+		}
+	}
+	
 	/**
 	 * Initialize the MediaPlayer class
 	 */
@@ -105,6 +128,19 @@ public class MusicService extends Service implements OnPreparedListener, MediaPl
 	public void onPrepared(MediaPlayer mp) {
 		//Start playback
 		mp.start();		
+		/**
+		 * we will display a notification showing the title of the track being played. Clicking the notification will take the user back into the app
+		 */
+		Intent noIntent = new Intent(this,MainActivity.class);
+		noIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, noIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+		
+		Notification.Builder builder = new Notification.Builder(this);
+		
+		builder.setContentIntent(pendingIntent).setSmallIcon(R.drawable.play).setTicker(songTitle).setOngoing(true).setContentTitle("Playing").setContentText(songTitle);
+		Notification notif = builder.build();
+		
+		startForeground(NOTIFY_ID,notif);
 	}
 	/**
 	 * Play a music
@@ -125,6 +161,7 @@ public class MusicService extends Service implements OnPreparedListener, MediaPl
 		catch(Exception e){
 			Log.e("MUSIC SERVICE","EXCEPTION setting data resources",e);
 		}
+		songTitle = playSong.getTitle();
 		//Prepare the player for playback Asynchronous
 		//When the player is prepared, the onPrepare method will be executed
 		player.prepareAsync();
@@ -180,10 +217,27 @@ public class MusicService extends Service implements OnPreparedListener, MediaPl
 	}
 	
 	//Next
+	/**
+	 * We must handle a queue of song to be sure to don't repeat the same music in shuffle
+	 */
 	public void playNext()
 	{
+		if(shuffle){
+			int newSong = songPosition;
+			while(newSong == songPosition)
+			{
+				newSong = random.nextInt(songs.size());
+			}
+		}else{
 		songPosition ++;
 		if(songPosition >= songs.size()) songPosition = 0;
+		}
 		playSong();
+	}
+	
+	@Override
+	public void onDestroy()
+	{
+		stopForeground(true);
 	}
 }
