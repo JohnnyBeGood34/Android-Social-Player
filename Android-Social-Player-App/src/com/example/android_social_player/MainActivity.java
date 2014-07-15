@@ -17,16 +17,19 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
 
 public class MainActivity extends Activity {
 
 	private ArrayList<Song> songList;
 	private ListView songView;
-	//Service class
+	// Service class
 	private MusicService musicService;
 	private Intent playerIntent;
 	private boolean musicBound = false;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -34,35 +37,35 @@ public class MainActivity extends Activity {
 
 		songView = (ListView) findViewById(R.id.song_list);
 		songList = new ArrayList<Song>();
-		
+
 		getSongList();
-		
-		//To display the list of song, we sprt the data alphabetically
-		Collections.sort(songList,new Comparator<Song>(){
-			public int compare(Song one, Song two){
+
+		// To display the list of song, we sprt the data alphabetically
+		Collections.sort(songList, new Comparator<Song>() {
+			public int compare(Song one, Song two) {
 				return one.getTitle().compareTo(two.getTitle());
 			}
 		});
-		
-		//Set view with custom adapter
-		SongAdapter songAdapter = new SongAdapter(this,songList);
+
+		// Set view with custom adapter
+		SongAdapter songAdapter = new SongAdapter(this, songList);
 		songView.setAdapter(songAdapter);
 	}
 
 	/**
-	 * Connect to the music service
-	 * We play the music with MusicService class but we control it from the main Activity
-	 * The callback methods will inform the class when the activity instance has successfully connected to the service instance.
-	 * Then the activity can interact with it
+	 * Connect to the music service We play the music with MusicService class
+	 * but we control it from the main Activity The callback methods will inform
+	 * the class when the activity instance has successfully connected to the
+	 * service instance. Then the activity can interact with it
 	 */
-	private ServiceConnection musicConnection = new ServiceConnection(){
+	private ServiceConnection musicConnection = new ServiceConnection() {
 
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
-			MusicBinder binder = (MusicBinder)service;
-			//Get service
+			MusicBinder binder = (MusicBinder) service;
+			// Get service
 			musicService = binder.getService();
-			//Pass list of song
+			// Pass list of song
 			musicService.setList(songList);
 			musicBound = true;
 		}
@@ -71,9 +74,9 @@ public class MainActivity extends Activity {
 		public void onServiceDisconnected(ComponentName name) {
 			musicBound = false;
 		}
-		
+
 	};
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -81,6 +84,30 @@ public class MainActivity extends Activity {
 		return true;
 	}
 
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		// If the user click on the shuffle button
+		case R.id.action_shuffle:
+			break;
+		// If the user click on the end button
+		case R.id.action_end:
+			stopService(playerIntent);
+			musicService = null;
+			System.exit(0);
+			break;
+		}
+
+		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	protected void onDestroy(){
+		stopService(playerIntent);
+		musicService = null;
+		super.onDestroy();
+	}
+	
 	/**
 	 * Helper method to retrieve the audio file informations
 	 */
@@ -113,17 +140,27 @@ public class MainActivity extends Activity {
 			} while (musicCursor.moveToNext());
 		}
 	}
+
 	/**
-	 * When the activity starts, we create the intent object if it doesn't exists yet, bind and start to it.
+	 * When the activity starts, we create the intent object if it doesn't
+	 * exists yet, bind and start to it.
 	 */
 	@Override
-	protected void onStart(){
+	protected void onStart() {
 		super.onStart();
-		if(playerIntent == null)
-		{
-			playerIntent = new Intent(this,MusicService.class);
+		if (playerIntent == null) {
+			playerIntent = new Intent(this, MusicService.class);
 			bindService(playerIntent, musicConnection, Context.BIND_AUTO_CREATE);
 			startService(playerIntent);
 		}
+	}
+
+	/**
+	 * OnClick method declared in song.xml OnClick on the song list
+	 */
+	public void songPicked(View view) {
+		// Set the song position as the tag for each item in the list view
+		musicService.setSong(Integer.parseInt(view.getTag().toString()));
+		musicService.playSong();
 	}
 }
