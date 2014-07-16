@@ -3,11 +3,12 @@ package com.example.android_social_player;
 import android.content.Context;
 import android.widget.MediaController;
 
-public class MusicController extends MediaController{
+public class MusicController extends MediaController {
 
 	public MusicController(Context context) {
 		super(context);
 	}
-	
-	public void hide(){}
+
+	public void hide() {
+	}
 }

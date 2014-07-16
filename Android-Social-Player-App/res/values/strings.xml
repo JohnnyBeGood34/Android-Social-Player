@@ -6,4 +6,5 @@
     <string name="hello_world">Hello world!</string>
 	<string name="Shuffle">Shuffle</string>
 	<string name="End">End</string>
+	<string name="musicDuration">0:00</string>
 </resources>

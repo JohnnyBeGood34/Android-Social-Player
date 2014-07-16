@@ -3,12 +3,14 @@ package com.example.android_social_player;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.concurrent.TimeUnit;
 
 import com.example.android_social_player.MusicService.MusicBinder;
 
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -32,7 +34,6 @@ public class MainActivity extends Activity implements MediaPlayerControl {
 	private boolean musicBound = false;
 	private MusicController controllerMusic;
 	private boolean paused = false, playbackPaused = false;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -70,7 +71,7 @@ public class MainActivity extends Activity implements MediaPlayerControl {
 				playPrev();
 			}
 		});
-
+		
 		controllerMusic.setMediaPlayer(this);
 		controllerMusic.setAnchorView(findViewById(R.id.song_list));
 		controllerMusic.setEnabled(true);
@@ -154,6 +155,7 @@ public class MainActivity extends Activity implements MediaPlayerControl {
 	/**
 	 * Helper method to retrieve the audio file informations
 	 */
+	@SuppressLint("DefaultLocale")
 	public void getSongList() {
 		ContentResolver musicResolver = getContentResolver();
 		// Get Music list URI
@@ -171,14 +173,19 @@ public class MainActivity extends Activity implements MediaPlayerControl {
 					.getColumnIndex(android.provider.MediaStore.Audio.Media._ID);
 			int artistColumn = musicCursor
 					.getColumnIndex(android.provider.MediaStore.Audio.Media.ARTIST);
-
+			int durationColumn = musicCursor.getColumnIndex(android.provider.MediaStore.Audio.Media.DURATION);
 			// Then, add song to the list
 			do {
 				long songId = musicCursor.getLong(idColumn);
 				String songTitle = musicCursor.getString(titleColumn);
 				String songArtist = musicCursor.getString(artistColumn);
-
-				songList.add(new Song(songId, songTitle, songArtist));
+				long songDuration = musicCursor.getLong(durationColumn);
+				//Convert milliseconds to h:m:s
+				String hms = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(songDuration),
+			            TimeUnit.MILLISECONDS.toMinutes(songDuration) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(songDuration)),
+			            TimeUnit.MILLISECONDS.toSeconds(songDuration) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(songDuration)));
+				
+				songList.add(new Song(songId, songTitle, songArtist,hms));
 
 			} while (musicCursor.moveToNext());
 		}
@@ -296,7 +303,9 @@ public class MainActivity extends Activity implements MediaPlayerControl {
 
 	@Override
 	protected void onStop() {
-		controllerMusic.hide();
 		super.onStop();
+		controllerMusic.hide();
+		musicService.stopPlayer();
+		musicService.releasePlayer();
 	}
 }
