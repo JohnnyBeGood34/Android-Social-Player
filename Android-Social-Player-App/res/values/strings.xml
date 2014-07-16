@@ -7,4 +7,10 @@
 	<string name="Shuffle">Shuffle</string>
 	<string name="End">End</string>
 	<string name="musicDuration">0:00</string>
+	<string-array name="user_actions">
+        <item>Account</item>
+        <item>Action 1</item>
+        <item>Action 2</item>
+        <item>Action 3</item>
+    </string-array>
 </resources>

@@ -15,7 +15,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -30,7 +29,7 @@ import android.widget.ListView;
 import android.widget.MediaController.MediaPlayerControl;
 
 public class MainActivity extends Activity implements MediaPlayerControl {
-
+	//Song list view
 	private ArrayList<Song> songList;
 	private ListView songView;
 	// Service class
@@ -39,11 +38,13 @@ public class MainActivity extends Activity implements MediaPlayerControl {
 	private boolean musicBound = false;
 	private MusicController controllerMusic;
 	private boolean paused = false, playbackPaused = false;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
+		
+		/****PLAYER****/
 		songView = (ListView) findViewById(R.id.song_list);
 		songList = new ArrayList<Song>();
 
@@ -332,4 +333,5 @@ public class MainActivity extends Activity implements MediaPlayerControl {
 		musicService.stopPlayer();
 		musicService.releasePlayer();
 	}
+	
 }
