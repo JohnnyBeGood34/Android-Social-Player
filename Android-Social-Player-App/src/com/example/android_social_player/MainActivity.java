@@ -10,17 +10,22 @@ import com.example.android_social_player.MusicService.MusicBinder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.provider.MediaStore;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.MediaController.MediaPlayerControl;
 
@@ -174,19 +179,38 @@ public class MainActivity extends Activity implements MediaPlayerControl {
 			int artistColumn = musicCursor
 					.getColumnIndex(android.provider.MediaStore.Audio.Media.ARTIST);
 			int durationColumn = musicCursor.getColumnIndex(android.provider.MediaStore.Audio.Media.DURATION);
+			
+			int albumIdColumn = musicCursor.getColumnIndex(android.provider.MediaStore.Audio.Media.ALBUM_ID);
 			// Then, add song to the list
 			do {
 				long songId = musicCursor.getLong(idColumn);
 				String songTitle = musicCursor.getString(titleColumn);
 				String songArtist = musicCursor.getString(artistColumn);
 				long songDuration = musicCursor.getLong(durationColumn);
+				long albumId = musicCursor.getLong(albumIdColumn);
 				//Convert milliseconds to h:m:s
 				String hms = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(songDuration),
 			            TimeUnit.MILLISECONDS.toMinutes(songDuration) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(songDuration)),
 			            TimeUnit.MILLISECONDS.toSeconds(songDuration) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(songDuration)));
 				
 				songList.add(new Song(songId, songTitle, songArtist,hms));
-
+				
+				/*Add album photo*/
+				Cursor cursor = musicResolver.query(
+						MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,new String[] { MediaStore.Audio.Albums._ID,MediaStore.Audio.Albums.ALBUM_ART },MediaStore.Audio.Albums._ID + "=?",new String[] { String.valueOf(albumId) }, null);
+				if (cursor.moveToFirst()) {
+					String path = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
+					Log.i("ALBUM ART-------------",path);
+					Uri uriPath = Uri.parse(path);
+					ImageView imageAlbum = (ImageView)findViewById(R.id.album_img);
+					Bitmap bitmap = null;
+			        try {
+			            bitmap = MediaStore.Images.Media.getBitmap(MainActivity.this.getContentResolver(), uriPath);
+			            imageAlbum.setImageBitmap(bitmap);
+			        } catch (Exception exception) {
+			            Log.e("ERROR DURING SETTING IMAGE ALBUM",exception.toString());
+			        }
+				}
 			} while (musicCursor.moveToNext());
 		}
 	}
