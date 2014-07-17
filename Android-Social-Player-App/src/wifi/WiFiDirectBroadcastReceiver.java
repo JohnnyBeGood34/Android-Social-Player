@@ -1,13 +1,6 @@
 package wifi;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import com.example.android_social_player.DiscoverDevices;
-import com.example.android_social_player.SongAdapter;
-import com.example.android_social_player.WifiPeerListAdapter;
-
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -24,7 +17,7 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver{
 	private WifiP2pManager wifiManager;
 	private Channel wifiChannel;
 	private DiscoverDevices activity;
-	private ArrayList<WifiP2pDevice> peers = new ArrayList();
+	private ArrayList<WifiP2pDevice> peers = new ArrayList<WifiP2pDevice>();
 
 	
 	public WiFiDirectBroadcastReceiver(WifiP2pManager manager, Channel channel,DiscoverDevices activity)

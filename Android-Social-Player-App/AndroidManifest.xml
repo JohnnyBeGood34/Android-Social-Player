@@ -37,7 +37,7 @@
         <service android:name="com.example.android_social_player.MusicService" />
 
         <activity
-            android:name="com.example.android_social_player.DiscoverDevices"
+            android:name="wifi.DiscoverDevices"
             android:label="@string/title_activity_discover_devices" >
         </activity>
     </application>

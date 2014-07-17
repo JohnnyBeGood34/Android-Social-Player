@@ -3,6 +3,7 @@ package com.example.android_social_player;
 import java.util.ArrayList;
 import java.util.Random;
 
+import BusinessLogicLayer.Song;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;

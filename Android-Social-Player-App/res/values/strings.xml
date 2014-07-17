@@ -8,7 +8,7 @@
     <string name="End">End</string>
     <string name="Wifi">Discover devices</string>
     <string name="musicDuration">0:00</string>
-
+	<string name="peer_title">Discover devices</string>
     <string-array name="user_actions">
         <item>Account</item>
         <item>Action 1</item>
