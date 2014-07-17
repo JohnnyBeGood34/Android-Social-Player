@@ -3,6 +3,8 @@ package com.example.android_social_player;
 import java.util.ArrayList;
 import java.util.Random;
 
+import com.example.android_social_player.R;
+
 import BusinessLogicLayer.Song;
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -21,7 +23,8 @@ import android.media.MediaPlayer.OnPreparedListener;
 /**
  * Music service
  * 
- * @author coxyJo All interfaces we are implementing will aid the process of
+ * @author coxyJo 
+ * All interfaces we are implementing will aid the process of
  *         interacting with the MediaPlayer class
  */
 public class MusicService extends Service implements OnPreparedListener,

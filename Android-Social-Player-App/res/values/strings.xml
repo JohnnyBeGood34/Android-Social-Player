@@ -8,7 +8,8 @@
     <string name="End">End</string>
     <string name="Wifi">Discover devices</string>
     <string name="musicDuration">0:00</string>
-	<string name="peer_title">Discover devices</string>
+    <string name="peer_title">Discover devices</string>
+	<string name="title_choose_role">Choose role</string>
     <string-array name="user_actions">
         <item>Account</item>
         <item>Action 1</item>
@@ -17,5 +18,6 @@
     </string-array>
 
     <string name="title_activity_discover_devices">DiscoverDevices</string>
+    <string name="title_activity_super_main">SuperMainActivity</string>
 
 </resources>

@@ -5,9 +5,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.concurrent.TimeUnit;
 
+import com.example.android_social_player.MusicService.MusicBinder;
+
 import wifi.DiscoverDevices;
 
-import com.example.android_social_player.MusicService.MusicBinder;
 
 import BusinessLogicLayer.Song;
 import CustomAdapters.SongAdapter;
