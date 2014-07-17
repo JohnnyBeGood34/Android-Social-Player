@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pManager;
+import android.net.wifi.p2p.WifiP2pManager.ActionListener;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.net.wifi.p2p.WifiP2pManager.PeerListListener;
 import android.util.Log;
@@ -18,7 +20,7 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver{
 	private Channel wifiChannel;
 	private DiscoverDevices activity;
 	private ArrayList<WifiP2pDevice> peers = new ArrayList<WifiP2pDevice>();
-
+	private int peerPosition;
 	
 	public WiFiDirectBroadcastReceiver(WifiP2pManager manager, Channel channel,DiscoverDevices activity)
 	{
@@ -85,4 +87,29 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver{
         }
     };
 
+    public void setPeerPosition(int position)
+    {
+    	this.peerPosition = position;
+    }
+    
+    public void connectToPeer()
+    {
+    	//obtain a peer from the WifiP2pDeviceList
+    	WifiP2pDevice device = peers.get(peerPosition);
+    	WifiP2pConfig config = new WifiP2pConfig();
+    	config.deviceAddress = device.deviceAddress;
+    	wifiManager.connect(wifiChannel, config, new ActionListener() {
+
+    	    @Override
+    	    public void onSuccess() {
+    	        //success logic
+    	    }
+
+    	    @Override
+    	    public void onFailure(int reason) {
+    	        //failure logic
+    	    }
+    	});
+
+    }
 }

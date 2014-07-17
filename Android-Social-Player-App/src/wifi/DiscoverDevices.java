@@ -10,7 +10,6 @@ import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.os.Bundle;
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.util.Log;
@@ -22,9 +21,10 @@ public class DiscoverDevices extends Activity implements IActivityDiscoverDevice
 	
 	WifiP2pManager wifiManager;
 	Channel wifiChannel;
-	BroadcastReceiver wifiReceiver;
+	WiFiDirectBroadcastReceiver wifiReceiver;
 	IntentFilter intentFilter;
 	private ListView peerView;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -92,6 +92,8 @@ public class DiscoverDevices extends Activity implements IActivityDiscoverDevice
 	 */
 	public void peerPicked(View view)
 	{
-		
+		int peerPosition = Integer.parseInt(view.getTag().toString());
+		wifiReceiver.setPeerPosition(peerPosition);
+		wifiReceiver.connectToPeer();
 	}
 }
