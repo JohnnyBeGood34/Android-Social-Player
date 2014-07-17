@@ -146,6 +146,10 @@ public class MainActivity extends Activity implements MediaPlayerControl {
 			musicService = null;
 			System.exit(0);
 			break;
+		case R.id.action_wifi:
+			Intent wifiIntent = new Intent(MainActivity.this,DiscoverDevices.class);
+			startActivity(wifiIntent);
+			break;
 		}
 
 		return super.onOptionsItemSelected(item);
@@ -197,8 +201,7 @@ public class MainActivity extends Activity implements MediaPlayerControl {
 				songList.add(new Song(songId, songTitle, songArtist,hms));
 				
 				/*Add album photo*/
-				Cursor cursor = musicResolver.query(
-						MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,new String[] { MediaStore.Audio.Albums._ID,MediaStore.Audio.Albums.ALBUM_ART },MediaStore.Audio.Albums._ID + "=?",new String[] { String.valueOf(albumId) }, null);
+				Cursor cursor = musicResolver.query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,new String[] { MediaStore.Audio.Albums._ID,MediaStore.Audio.Albums.ALBUM_ART },MediaStore.Audio.Albums._ID + "=?",new String[] { String.valueOf(albumId) }, null);
 				if (cursor.moveToFirst()) {
 					String path = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
 					Log.i("ALBUM ART-------------",path);

@@ -7,10 +7,16 @@
     <uses-sdk
         android:minSdkVersion="16"
         android:targetSdkVersion="18" />
-	
+
     <!-- permission to let music play back continue when the user's device becomes idle -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -20,13 +26,20 @@
             android:name="com.example.android_social_player.MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop"
-  			android:screenOrientation="portrait" >
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <service android:name="com.example.android_social_player.MusicService" />
+
+        <activity
+            android:name="com.example.android_social_player.DiscoverDevices"
+            android:label="@string/title_activity_discover_devices" >
+        </activity>
     </application>
 
 </manifest>

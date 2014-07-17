@@ -1,16 +1,23 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
  
+    <item
+    android:id="@+id/action_wifi"
+    android:icon="@drawable/wifi"
+    android:orderInCategory="1"
+    android:showAsAction="always"
+    android:title="@string/Wifi"/>
+    
   <item
     android:id="@+id/action_shuffle"
     android:icon="@drawable/rand"
-    android:orderInCategory="1"
+    android:orderInCategory="2"
     android:showAsAction="always"
     android:title="@string/Shuffle"/>
  
   <item
     android:id="@+id/action_end"
     android:icon="@drawable/end"
-    android:orderInCategory="2"
+    android:orderInCategory="3"
     android:showAsAction="always"
     android:title="@string/End"/>
  
