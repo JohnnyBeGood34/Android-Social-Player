@@ -1,7 +1,12 @@
 package com.example.android_social_player;
 
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.View;
@@ -43,6 +48,12 @@ public class SuperMainActivity extends Activity {
 				startActivity(intent);
 			}
 		});
+		
+		WifiManager wifi = (WifiManager)getSystemService(Context.WIFI_SERVICE);
+		if (!wifi.isWifiEnabled()){
+			//wifi is disabled
+			createNetErrorDialog();
+		}
 	}
 
 	@Override
@@ -51,5 +62,37 @@ public class SuperMainActivity extends Activity {
 		getMenuInflater().inflate(R.menu.super_main, menu);
 		return true;
 	}
+	/**
+	 * Ask the user to enable Wifi
+	 */
+	protected void createNetErrorDialog() {
 
+	    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+	    builder.setMessage("You need a network connection to use this application. Please turn on mobile network or Wi-Fi in Settings.")
+	        .setTitle("Unable to connect")
+	        .setCancelable(false)
+	        .setPositiveButton("Settings",
+	        new DialogInterface.OnClickListener() {
+	            public void onClick(DialogInterface dialog, int id) {
+	                Intent i = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
+	                startActivity(i);
+	            }
+	        }
+	    )
+	    .setNegativeButton("Cancel",
+	        new DialogInterface.OnClickListener() {
+	            public void onClick(DialogInterface dialog, int id) {
+	                
+	            }
+	        }
+	    );
+	    AlertDialog alert = builder.create();
+	    alert.show();
+	}
+	
+	@Override
+	protected void onResume()
+	{
+		super.onResume();
+	}
 }

@@ -50,5 +50,4 @@
         
         <service android:name="com.example.android_social_player.MusicService" />
     </application>
-
 </manifest>

@@ -10,6 +10,7 @@ import com.example.android_social_player.MusicService.MusicBinder;
 import wifi.DiscoverDevices;
 
 
+import BusinessLogicLayer.Role;
 import BusinessLogicLayer.Song;
 import CustomAdapters.SongAdapter;
 import android.net.Uri;
@@ -48,6 +49,12 @@ public class MainActivity extends Activity implements MediaPlayerControl {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		/*Setting role*/
+		Intent intentSuperMain = getIntent();
+		String role = intentSuperMain.getStringExtra("ROLE");
+		Role.setRole(role);
+		/*End setting role*/
 		
 		/****PLAYER****/
 		songView = (ListView) findViewById(R.id.song_list);
